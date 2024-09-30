@@ -43,7 +43,7 @@ profiles:
   #   url: https://orcid.org/
 
 interests:
-  - LLM Inference on Edge&Smartphones
+  - LLM Inference on Edge AI system & Smartphones
   - Distributed Training System
   - Cluster Resource Scheduling
 
