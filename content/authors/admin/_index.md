@@ -1,6 +1,6 @@
 ---
 # Display name
-title: 纪 清 玮(Ji Qing Wei)
+title: Qingwei Ji
 
 # Name pronunciation (optional)
 # name_pronunciation: Ji Qing Wei
@@ -10,8 +10,8 @@ title: 纪 清 玮(Ji Qing Wei)
 # last_name: Chien
 
 # Status emoji
-status:
-  icon: ☕️
+# status:
+#   icon: ☕️
 
 # Is this the primary user of the site?
 superuser: true
