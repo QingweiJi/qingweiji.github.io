@@ -1,9 +1,9 @@
 ---
 # Display name
-title: 纪 清 玮
+title: 纪 清 玮(Ji Qing Wei)
 
 # Name pronunciation (optional)
-name_pronunciation: Ji Qing Wei
+# name_pronunciation: Ji Qing Wei
 
 # Full name (for SEO)
 # first_name: Shiung Wu
