@@ -3,12 +3,8 @@ title: LLM推理论文精读1 -- FlexGen[ICML'23]
 summary: FlexGen
 date: 2024-10-12
 math: true
-
-image: ![](./FlexGen.png)
-
 author:
   - Qingwei Ji
-
 tags:
   - LLM Inference 
   - CPU-GPU offloading
