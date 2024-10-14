@@ -3,6 +3,11 @@ title: Transformer Model Learning
 summary: transformer
 date: 2024-10-10
 math: true
+author:
+  - Qingwei Ji
+tags:
+  - LLM Inference 
+  - Transformer
 ---
 Transformer模型的一些基础解读
 
@@ -10,8 +15,8 @@ Transformer (原文[Attention is all your need](https://docalysis.s3.us-west-1.a
 
 1. [台大李宏毅自注意力机制和Transformer详解](https://www.bilibili.com/video/BV1v3411r78R/?spm_id_from=333.337.search-card.all.click&vd_source=e092b13f32ccf57ffa840f905bb9dd08)
 （强推！）
-2. [李沐Transformer论文逐段精读【论文精读】](https://www.bilibili.com/video/BV1pu411o7BE/?vd_source=e092b13f32ccf57ffa840f905bb9dd08)
-3. [【官方双语】GPT是什么？直观解释Transformer | 深度学习第5章](https://www.bilibili.com/video/BV13z421U7cs/?spm_id_from=333.999.0.0&vd_source=e092b13f32ccf57ffa840f905bb9dd08)
+1. [李沐Transformer论文逐段精读【论文精读】](https://www.bilibili.com/video/BV1pu411o7BE/?vd_source=e092b13f32ccf57ffa840f905bb9dd08)
+2. [【官方双语】GPT是什么？直观解释Transformer | 深度学习第5章](https://www.bilibili.com/video/BV13z421U7cs/?spm_id_from=333.999.0.0&vd_source=e092b13f32ccf57ffa840f905bb9dd08)
 
 
 ## self-attention
