@@ -1,8 +1,18 @@
 ---
-title: LLM推理论文精读1 —— FlexGen[ICML'23]
+title: LLM推理论文精读1 -- FlexGen[ICML'23]
 summary: FlexGen
 date: 2024-10-12
 math: true
+
+image: ![](./FlexGen.png)
+
+author:
+  - Qingwei Ji
+
+tags:
+  - LLM Inference 
+  - CPU-GPU offloading
+  - resource-constrained device
 ---
 
 *[FlexGen: High-Throughput Generative Inference of Large Language Models with a Single GPU](https://dl.acm.org/doi/10.5555/3618408.3619696)[ICML’23]* 
