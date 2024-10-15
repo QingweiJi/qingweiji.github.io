@@ -115,6 +115,8 @@ decoding phase阶段里，可以看出每层的input tokens只是做了一个拼
 
 ## 内存占用分析
 
+模型推理一共有两部分内容会占用GPU内存，模型参数和 KV cache
+
 ### 模型参数量
 
 Transformer模型由$l$个相同的层组成，每个层分为两部分：self-attention块和MLP块，并分别对应了一个layer normalization连接。
@@ -171,6 +173,8 @@ $$2 \cdot precision \cdot n_{layer} \cdot d_{model} \cdot seq\_len \cdot batch\_
 $$b(s+n)h \cdot l \cdot 2 \cdot 2 = 4blh(s+n)$$
 其中，第一个 2 表示 k 和 v cache，第二个 2 表示 float16 数据格式存储 kv cache，每个元素占 2 bytes。此处，FlexGen中为$h=h_1$。
 
+>注意⚠️：推理的时候并不需要保存激活值
+
 
 ## Throughput And Latency
 
@@ -203,10 +207,13 @@ Effective batch size 也叫 Block size($bls$) = GPU batch size * GPU batches in 
 
 FlexGen构建了一个推理计算图，如下所示。其中模型有4层，每个prompt生成3个token。该图中一个正方形就表示一层的GPU批次的计算，相同颜色的正方形共享相同的权重。
 ![](./2.png)
+
 根据上面抽象出来的推理计算图，要设法在图中找出一条能够最小化执行时间的路径，其中包括在设备之间移动张量时的计算成本和 I/O 成本。
 
 
 ### zig-zag并行策略
+
+![](./3.png)
 
 
 ### Block Schedule with Overlapping算法
@@ -241,7 +248,7 @@ $$T_{pre}=\max(ctog^g,gtoc^g,dtoc^g,ctod^g,comp^g)$$
 其中各参数分别表示一层解码过程中，CPU读到GPU、GPU写到CPU、磁盘读到CPU、CPU写到磁盘、计算的时延。
 
 以下是FlexGen中计算磁盘到CPU拖取数据的耗时的量化结论。
-![](./5.png)
+![](./4.png)
 
 对于像这样的I/O术语，可以通过将包含权重、激活和缓存读取的I/O事件相加来估计。
 
