@@ -1,18 +1,17 @@
 ---
 title: Primal-Dual Approximate Algorithm Based On LP
 date: 2023-04-13 16:55:32
+summary: 基于LP的近似算法
 tags:
-- 线性规划
-- 近似算法
-categories: 
-- 数学优化
-- 算法总结
-mathjax: true
+- Math And Algorithm
+- Job Scheduling
+author:
+  - Qingwei Ji
+math: true
 ---
 
 本文是笔者本学期旁听的一门博士算法思维课程的相关笔记。本文主要对基于LP(Linear Programming，线性规划)的近似算法，以Primal-Dual为例进行深入分析与总结。笔者主要使用来自香港大学的Wu Chuan老师和东南大学的Zhou Ruiting老师的几篇采用了Primal-Dual方法来求解的论文辅助分析与理解。
 
-<!--more-->
 
 该课程由电子科技大学信息与通信工程学院王晟老师开设，王晟老师在算法分析与设计方面具有多年的理论基础与实践经验，其授课风格也是笔者非常欣赏的，务实有用且融会贯通。笔者常常在听完一节课后感叹课程开设的时间实在是太短了，也经常在听讲过程中多次发掘自己需要学习的东西还非常多。
 

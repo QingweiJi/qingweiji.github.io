@@ -1,17 +1,17 @@
 ---
 title: Deep Learning Workloads Scheduling in GPU Clusters
 date: 2023-04-08 21:24:04
+summary: GPU集群中的DLT任务调度工作研讨
 tags:
-- 分布式训练
-- 任务调度优化
-- 弹性训练
-categories: 
-- 论文总结
+- Distributed Training
+- Job Scheduling
+- ELastic Training
+author:
+  - Qingwei Ji
+math: true
 ---
 
 本文是笔者近期在组会中分享的工作汇总PPT。该PPT是对大规模高性能GPU集群环境中深度学习训练(Deep Learning Training，DLT)任务的研究意义和难点的总结与分析。
-
-<!--more-->
 
 该PPT主要包括研究背景、现状总结和未来发展三个方面的内容。
 

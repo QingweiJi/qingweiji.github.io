@@ -1,17 +1,17 @@
 ---
 title: A Preemptive Scheduler for DML Jobs In Edge-Cloud·22'JSAC
 date: 2023-05-30 19:20:22
+summary: 云边协同场景中抢占式调度策略
 tags:
-- 分布式训练
-- 任务调度优化
-categories: 
-- 论文精读
-mathjax: true
+- Math And Algorithm
+- Online Scheduling
+- Job Scheduling
+author:
+  - Qingwei Ji
+math: true
 ---
 
 笔者近期在复现武汉大学的Wang Ne博士于2022年发表在网络通信领域顶刊IEEE Journal of Selected Areas in Communications(JSAC)上的一篇论文[2]，主要是在云边协同场景中利用抢占调度的方式实现深度学习任务的平均任务完成时间(JCT)最小化问题。本文是对该论文的深入分析与探讨。
-
-<!--more-->
 
 直到开始复现这篇论文，笔者才深刻的认识到一个非常严肃的问题，那就是笔者之前可能根本没有真的读懂过这篇论文。这包含多个方面，也是读者在下文中要重点赘述的部分：
 

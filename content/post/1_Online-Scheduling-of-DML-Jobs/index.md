@@ -1,17 +1,18 @@
 ---
-title: Online Scheduling of DML Jobs from ChuanWu And Ruiting Zhou
+title: Online Scheduling of DML Jobs
+summary: DML任务在线调度优化论文总结
 date: 2023-03-21 21:23:15
 tags:
-- 分布式训练
-- 任务调度优化
-- 弹性训练
-categories: 
-- 论文总结
+- Distribute Training
+- Online Scheduling
+- Job Scheduling
+- Elastic Training
+author:
+  - Qingwei Ji
+math: true
 ---
 
 本文是对香港大学Wu Chuan老师、武汉大学Li Zongpeng老师和东南大学Zhou Ruiting老师在Online Scheduling of DML Jobs方向的一系列相关研究的总结。DML即分布式机器学习(Distributed Machine Learning)。
-
-<!--more-->
 
 具体包括：
 

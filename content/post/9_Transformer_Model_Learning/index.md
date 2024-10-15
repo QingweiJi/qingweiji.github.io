@@ -1,6 +1,6 @@
 ---
 title: Transformer Model Learning
-summary: transformer
+summary: Transformer模型入门
 date: 2024-10-10
 math: true
 author:
@@ -9,7 +9,6 @@ tags:
   - LLM Inference 
   - Transformer
 ---
-Transformer模型的一些基础解读
 
 Transformer (原文[Attention is all your need](https://docalysis.s3.us-west-1.amazonaws.com/prod/sgk7dcw7kftek1a6rehs4cnslht2rj993jv8ywp8rbp7fx6vfpz4mbykgjwn7vzn.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUUXFV6NCXUJP7F5H%2F20241014%2Fus-west-1%2Fs3%2Faws4_request&X-Amz-Date=20241014T091710Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=2deac3c9002a4b352f9402fae70c4fa1946bbea89eeb83ce87940fcb65d007ba)) 小白学习路线：
 
@@ -104,6 +103,10 @@ transformer模型中的全连接层是一个两层的神经网络，第一层的
 $$FFN(Z) = \max(0, ZW_1+b1)W_2+b2$$
 
 先线性变换，然后ReLU非线性，再线性变换。输入的$Z$就是多头注意力的输出。经过FFN后最终得到的输出矩阵的维度与输入$Z$是一致的。因为这两层网络是为了将输入的$Z$映射到更高维的空间中，然后通过非线性函数ReLU进行筛选，筛选完后再变回原来的维度。
+
+
+## At the End
+
 
 ***Maybe: Attention is all your need!***
 

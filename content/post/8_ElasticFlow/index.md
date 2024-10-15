@@ -1,21 +1,20 @@
 ---
 title: 'ElasticFlow: Serverless DDL Training is better?'
 date: 2023-07-21 11:21:53
+summary: ASPLOS'23弹性调度论文ElasticFlow精读
 tags:
-- 分布式训练
-- 任务调度优化
-- 弹性训练
-categories: 
-- 论文精度
+- Distributed Training
+- Job Scheduling
+- Elastic Training
+- Deadline-Aware
+author:
+  - Qingwei Ji
+math: true
 ---
 
 ElasticFlow: An Elastic Serverless Training Platform for Distributed Deep Learning[[PDF]](https://dl.acm.org/doi/10.1145/3575693.3575721)[[Code]](https://github.com/pkusys/ElasticFlow/tree/main/ElasticFlow)[[Video]](https://www.youtube.com/watch?v=99SiHtckGWc)是北京大学Liu Xuanzhe教授和Jin Xin教授团队发表在计算机体系结构/并行与分布式计算/存储系统领域A类会议ASPLOS'23年的一篇论文，其中一作是Gu Diandian博士，二作Zhao Yihao博士已经连续两年以第一作者身份发表了网络领域顶会Sigcomm论文。
 
 本文是对ElasticFlow论文的深入分析与探讨。
-
-
-<!--more-->
-
 
 ElasticFlow[1]是一个面向分布式训练的弹性无服务器训练平台，聚焦于两点：
 

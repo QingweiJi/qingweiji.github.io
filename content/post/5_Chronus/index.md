@@ -1,16 +1,18 @@
 ---
 title: A Deadline-Aware Scheduler for DLT Jobs·21'SoCC
 date: 2023-04-13 20:11:52
+summary: Chronus论文精读
 tags:
-- 分布式训练
-- 任务调度优化
-categories: 
-- 论文精读
+- Distributed Training
+- Job Scheduling
+- Deadline-Aware
+author:
+  - Qingwei Ji
+math: true
 ---
 
 本文要讨论的是新加坡南洋理工大学S-Lab的Wei Gao博士发表在SoCC'21上的论文：**Chronus: A Novel Deadline-aware Scheduler for Deep Learning Training Jobs[[PDF]](https://yezhisheng.me/publication/chronus/chronus.pdf)[[Code]](https://github.com/S-Lab-System-Group/ChronusArtifact)**
 
-<!--more-->
 
 **摘要：** 现代GPU集群以分布式训练的方式支持深度学习训练任务(Deep Learning training，DLT)的训练。高效的任务调度是提高训练性能、资源利用率和用户间公平性的关键。不同类型的训练任务在完成时间和资源需求上的目标不同，因此如何在大规模GPU集群场景中合理调度有限资源来有效满足不同任务的差异化训练需求是一个值得研究的问题。
 

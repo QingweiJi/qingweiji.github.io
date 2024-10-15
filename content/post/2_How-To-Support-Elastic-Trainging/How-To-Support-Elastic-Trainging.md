@@ -1,18 +1,18 @@
 ---
 title: How To Support Elastic Trainging
 date: 2023-03-26 21:16:39
+summary: 弹性伸缩深度学习分布式训练
 tags:
-- 分布式训练
-- 任务调度优化
-- 弹性训练
-categories: 
-- 论文总结
+- Distributed Training
+- Job Scheduling
+- Elastic Training
+author:
+  - Qingwei Ji
+math: true
 ---
 
 
-本文是对分布式机器学习训练中如何支持弹性训练的一系列工作的总结。弹性训练指的是在任务的训练过程中动态调整任务的并行度（即GPU的数量）和资源分配情况。在阅读本文之前，笔者建议对GPU集群中深度学习训练任务的调度问题具有一定的了解，可以阅读笔者之前写过的两篇文章，分别是[Deep Learning Workloads Scheduling in GPU Clusters](https://qingweiji.github.io/2023/04/08/Deep-Learning-Workloads-Scheduling-in-GPU-Clusters/)和[Online Scheduling of DML Jobs from ChuanWu And Ruiting Zhou](https://qingweiji.github.io/2023/03/21/Online-Scheduling-of-DML-Jobs-from-ChuanWu-And-Ruiting-Zhou/)。
-
-<!--more-->
+本文是对分布式机器学习训练中如何支持弹性训练的一系列工作的总结。弹性训练指的是在任务的训练过程中动态调整任务的并行度（即GPU的数量）和资源分配情况。在阅读本文之前，笔者建议对GPU集群中深度学习训练任务的调度问题具有一定的了解，可以阅读笔者之前写过的两篇文章，分别是[Deep Learning Workloads Scheduling in GPU Clusters](https://qingweiji.github.io/2023/04/08/Deep-Learning-Workloads-Scheduling-in-GPU-Clusters/)和[Online Scheduling of DML Jobs](https://qingweiji.github.io/2023/03/21/Online-Scheduling-of-DML-Jobs-from-ChuanWu-And-Ruiting-Zhou/)。
 
 ## Gang-Scheduling VS. Elastic-Scheduling
 
