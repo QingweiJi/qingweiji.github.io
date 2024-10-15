@@ -29,7 +29,7 @@ math: true
 
 ## Q1：整体算法流程
 
-![](./Combinatorial-Online-Optimization-For-Online-DML-Job-Scheduling/1.png)
+![](./1.png)
 <center>图1：算法流程结构</center>
 
 整体目标：社会福利最大化（详情请见论文）
@@ -56,7 +56,7 @@ math: true
 
 任务的执行时长：
 
-![](./Combinatorial-Online-Optimization-For-Online-DML-Job-Scheduling/3.png)
+![](./3.png)
 
 其中${k^{wp}_j}$的值在确定了放置策后可以根据文中Eq.(1)直接计算出来。
 
@@ -92,7 +92,7 @@ math: true
 
 任务$j$的每一个可行调度方案$l$对应一个满足约束条件(2)-(9)(12)-(15)(16a)的决策变量集合，除计算资源容量约束外。具体的约束见原文。同时，$l$中包含的决策变量如下所示：
 
-![](./Combinatorial-Online-Optimization-For-Online-DML-Job-Scheduling/2.png)
+![](./2.png)
 <center>图2：决策变量集合</center>
 
 （1）到step1这一步确定的是$(w,p,a_j,D_w)$，相对应就确定了该任务的处理能力$k^{wp}_j$，然后根据两种放置策略可以分别计算出不同元组对应下的任务的执行时间$d_j$和完成时间$\hat{t_j}$。具体来说，绝对确定的决策变量是$o_{jw},o_{jp},k^{wp}_j,a_j$。

@@ -21,7 +21,7 @@ math: true
 其中，gang-scheduling要求任务在训练时所有算力资源（主要是GPU）以all-or-nothing（全有或全无）的方式来分配。gang-scheduling方式的缺点是非常明显的。通常，为了利用海量数据训练深度学习，分布式多GPU训练是必不可少的。多GPU训练任务在使用gang-scheduling方式调度时，除非所有需要的GPU同时可用，否则任务不会开始训练。然而，在忙碌的生产集群环境中，GPU资源很难同时得到满足。同时，在等待全部请求GPU的过程中，已经分配的 GPU 既不会执行任务，也不会释放给其他用户使用。比如，当一个用户申请四张卡，当前只有三张是空闲的，那么调度器就需要留住这三张卡，不调度给别的任务，等待最后一张卡就绪，从而把这个四张卡一起分配出去。此外，gang-scheduling调度方式下，训练任务是在固定的并行度(DoP)下执行的，因此当集群负载发生变化时，它无法进行GPU数量的扩展或者缩小。
 
 
-![](How-To-Support-Elastic-Trainging/1.png)
+![](./1.png)
 <center>图1：gang-scheduling下的GPU利用率[1]</center>
 
 相比之下，elastic-scheduling消除了严格的不变的GPU请求数量（初始请求）的约束，通过支持允许动态调整训练任务并行度（即GPU数量）的能力，以提高GPU利用率并加速训练过程。弹性训练的本质是基于DLT任务的弹性伸缩能力，具体包括两点：一是DLT任务的资源需求通常是弹性的，简单来说，就是在不同资源配置下（不同数量的GPU）任务所需的执行时间不同；二是在深度学习训练过程中可以利用[[checkpoint]](https://i.cs.hku.hk/~cwu/papers/yhpeng-eurosys18.pdf)等机制实现模型训练的暂停与恢复。
@@ -39,7 +39,7 @@ math: true
 
 （3）对于同步并行训练中的掉队者问题，可以通过scale-in技术从任务分配的资源中删除
 
-![](./How-To-Support-Elastic-Trainging/2.png)<center>图2：并行性对ResNet50的影响[2]：线性扩展是一种理想的情况，它假设吞吐量与并行度呈线性扩展，我们将其作为参考</center>
+![](./2.png)<center>图2：并行性对ResNet50的影响[2]：线性扩展是一种理想的情况，它假设吞吐量与并行度呈线性扩展，我们将其作为参考</center>
 
 
 图2结果表明，DL训练通常可以使用不同的并行度（即不同数量的GPU）处理任务，并且吞吐量和GPU训练效率都随着并行度而变化。因此，弹性可用于根据集群调度的不同目标（例如，更短的JCT、更高的吞吐量或GPU效率）动态调整DLT任务的并行性[[2]](https://ieeexplore.ieee.org/abstract/document/9373916)
@@ -49,7 +49,7 @@ math: true
 由于传统集群调度器使用gang-scheduling，导致资源无法充分利用。在使用elastic-scheduling之后，调度器可以根据集群的负载变化来动态调整分配给任务的资源量，即可以在集群不忙时或者暂时具有空闲资源时增加任务的并行度以实现高吞吐，加速训练过程，并在集群繁忙时降低并行度以提高集群的训练效率。
 
 
-![](./How-To-Support-Elastic-Trainging/3.png)
+![](./3.png)
 <center>图3：GPU集群可能在很长一段时间内负载过重，而在其他时间内利用率不高[2]</center>
 
 
@@ -57,7 +57,7 @@ math: true
 
 有些DLT任务是长期训练任务，完成任务训练可能需要持续几天甚至几周，这些长期任务通常也会请求数量较多的GPU资源。根据微软、阿里、商汤的生产集群数据报告分析可知，集群中存在大量的短期训练任务，这些小型任务通常用于程序正确性检查、参数配置调整和网络体系结构搜索，对响应能力提出了要求，属于best-effort(尽力而为)的任务。然而，集群中由于长期训练任务对于资源的占用引起的对头阻塞问题（head-of-line blocking）会严重降低小型任务的响应能力，比如等待小型任务调度的时间比实际运行这些小任务的时间长很多。这同样也是由传统的gang-scheduling引起的问题之一。通过使用elastic-scheduling的scale-in技术来减少一些长期训练任务占用的GPU资源量，以便在集群过载时为小型任务腾出空间，也加速小型任务的快速执行，降低响应延迟。
 
-![](./How-To-Support-Elastic-Trainging/4.png)
+![](./4.png)
 <center>图4：不同体量任务的（等待时间/运行时间）比率的累积分布函数[2]</center>
 
 
@@ -71,18 +71,18 @@ math: true
 
 GPU资源弹性在模型训练过程和模型收敛过程中引入了不确定性，导致一个DLT任务在使用不同份额的资源进行训练时，得到的模型精度不一致。
 
-![](./How-To-Support-Elastic-Trainging/6.png)
+![](./6.png)
 <center>图5：ResNet18的非确定性精度曲线[6]</center>
 
 对于图5的解释，可以直接参照原文：
 
-![](./How-To-Support-Elastic-Trainging/7.png)
+![](./7.png)
 
 **2、stop-resume机制带来了额外的操作开销[2,7]**
 
 为了支持弹性训练，DLT任务可以通过stop-resume来暂停和恢复训练。但是，弹性训练应该是在低开销下进行的，以支持任务训练过程中频繁的并行度调整并有效地利用暂时空闲的GPU资源。大多数DL系统都支持stop-resume机制，但正在运行的任务通常需要停止30秒以上，这种高开销限制了集群调度器快速适应动态资源可用性和任务训练需求的能力。同时，高开销也阻碍了对暂时空闲资源的有效利用。
 
-![](./How-To-Support-Elastic-Trainging/5.png)
+![](./5.png)
 <center>图6：使用stop-resume的开销[2]</center>
 
 **3、弹性训练框架应该与现有的DL系统兼容并容易上手操作**
@@ -95,7 +95,7 @@ GPU资源弹性在模型训练过程和模型收敛过程中引入了不确定�
 
 ***Gandiva[3]***
 
-![](How-To-Support-Elastic-Trainging/8.png)
+![](./8.png)
 <center>图7：Gandiva系统实现</center>
 
 Gandiva设计了一种*Grow-Shrink*机制，主要用于适应集群的负载变化。具体来说，该机制使用profiling的信息来估计每个任务的训练进度，进而为任务分配GPU资源。从普适的观点出发，对于大部分的训练任务，分配到的算力资源越多，模型完成训练需要的时间就会越少。因此，在集群负载较小时，分配给某一任务的GPU数量就会增多(grow)；反之，则会减少(shrink)。
@@ -120,7 +120,7 @@ Optimus通过上述两个步骤对一个DLT任务使用的PS和worker数量进�
 
 ***Pollux[9]***
 
-![](./How-To-Support-Elastic-Trainging/10.png)
+![](./10.png)
 <center>图10：Pollux集群调度器</center>
 
 Pollux不仅从GPU资源弹性方面，还从训练框架方面，联合提供支持DLT任务的弹性训练能力。
@@ -138,7 +138,7 @@ Pollux通过观察每个DLT任务的训练状态和集群的资源利用情况�
 
 具体来说，Pollux定义了一个新的metric：goodput，而不是throughput。goodput是一个综合衡量训练性能的指标，包括系统吞吐量(system throughput)和工作效率(statistical efficiency)。作者认为，一个正确配置的深度学习训练任务应当在以下两个指标之间取得平衡。
 
-![](./How-To-Support-Elastic-Trainging/11.png)
+![](./11.png)
 <center>图11：Pollux集群调度器的关键idea：Goodput，而不是Throughput</center>
 
 其中，系统吞吐量可以用 “每单位时钟时间内处理的训练样本数量” 进行测算；工作效率可以用 “每个被处理的训练样本所产生的训练进度量” 来衡量。个人理解这两个指标分别对应模型的训练速度和模型的收敛速度。其原文表述为：
@@ -154,7 +154,7 @@ Pollux通过观察每个DLT任务的训练状态和集群的资源利用情况�
 
 ***EDL[2]***
 
-![](./How-To-Support-Elastic-Trainging/12.png)
+![](./12.png)
 <center>图12：EDL的关键API</center>
 
 如图12所述，EDL通过scale-in/out技术来调整任务使用的worker的数量，即可以指示EDL使用一个简单的API删除/添加训练任务的任何worker。

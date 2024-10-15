@@ -82,7 +82,7 @@ math: true
 
 以一个具体的例子进行说明，方便后面理解：
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/4.png)
+![](./4.png)
 <center>图1：某机器加工厂在计划期的设备和产品加工信息</center>
 
 原问题：在计划期内，自己生产，使得利润最大。设为生产产品1的数量，为生产产品2的数量。因此，原问题可以写为：
@@ -187,16 +187,16 @@ ${p_e} \ge 0, \quad \forall e \in{E}$
 
 在黄红选的《数学规划》中对原始对偶算法的设计思路也是保证对偶可行，满足互补松弛性条件，逐步改善原始不可行性。当它们都被满足时，两个解都是最优解。在迭代过程中，总是对原始解进行整数修正，最终得到一个整数最优解。算法的基本过程如下：
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/1.png)
+![](./1.png)
 <center>图2：P-D的完整流程</center>
 
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/2.png)
+![](./2.png)
 <center>图3：如何构造第一个对偶可行解</center>
 
 从而，问题转变为：
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/3.png)
+![](./3.png)
 <center>图4：问题重写</center>
 
 
@@ -230,7 +230,7 @@ ${p_e} \ge 0, \quad \forall e \in{E}$
 
 我们以毕业于香港大学的Bao Yixin博士发表的论文[[OASIS-Infocom'18]](https://arxiv.org/pdf/1801.00936.pdf)为例。
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/6.png)
+![](./6.png)
 <center>图5：Offline Optimization Problem</center>
 
 问题(1)描述的是一个最大化系统总效用的问题，这是一个混合整数非线性规划(MINLP)问题。该问题既涉及常规约束（如资源容量约束），也涉及任务的完成时间（如约束8）这种非常规约束。并且，在问题(1)中还存在一个固有的结构特征--“三角形覆盖”，即决策变量之间是相互关联的。问题(1)的决策变量有三个：
@@ -249,31 +249,31 @@ $z_{ik}(t)$：整数变量，任务$i$在到达时间$a_i$及之后的每个时�
 
 问题(1)和问题(14)是等价的，因为问题(1)的可行解对应于问题(14)的可行解，反之亦然，它们的目标值相同。
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/7.png)
+![](./7.png)
 <center>图6：Online Problem Reformulation</center>
 
 **注意：问题(14)中只有一个决策变量$x_{il}$，问题(1)中的所有决策变量已经打包进$x_{il}$中里了。**
 
 虽然问题(14)引入了一个指数级的决策变量，但可以通过设计一个高效的在线算法，即利用Primal-Dual框架[11]，实现在多项式内求解ILP问题(14)。具体来说，通过松弛完整性约束(18)和表述出约束(15)(16)(17)的相关对偶变量${p_{h}^{r}(t)},{q_{k}^{r}(t)},{u_i}$，继而来表述出ILP(14)的对偶问题(19)。
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/8.png)
+![](./8.png)
 <center>图7：对偶问题</center>
 
     注意：在王晟老师讲授Primal-Dual这部分课程的过程中，多次强调，对偶变量的物理含义是人为定义的，需要自己找到。因此，很多对偶变量通常是不具备具体的含义的。
 
 在对偶问题(19)中，对偶变量${p_{h}^{r}(t)},{q_{k}^{r}(t)}$与与服务器$h(k)$上的原始容量约束相关联,可以解释为时隙$t$服务器$h$上$r$类型资源的单位成本，也就是时隙$t$租用服务器$h$上$r$类型资源所需成本，那么，图8和图9分别是任务$i$根据调度方案$l$执行时，所有worker/PS占用的资源总成本。
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/9.png)
+![](./9.png)
 <center>图8：worker总成本</center>
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/10.png)
+![](./10.png)
 <center>图9：PS总成本</center>
 
 约束(20)的右侧部分表示的是任务效用减去采用调度方案$l$运行任务$i$的总资源成本，为任务效益。根据Primal-Dual框架，为了最大化原始目标函数（即问题14），就需要最小化对偶目标函数（即问题19）。因此，OASIS先比较最优调度方案，也就是使得约束(20)右侧最大的调度方案，然后计算出约束(20)右侧部分的值与0的大小关系，并将其中较大的值赋给对偶变量$u_i$。
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/11.png)
+![](./11.png)
 
-![](./Primal-Dual-Approximate-Algorithm-Based-On-LP/12.png)
+![](./12.png)
 
 因此，$u_j$可以很好地解释为接纳任务$i$并按照最佳调度方案$l^*$执行后的收益。如果收益为正，那么系统就会接纳该任务；否则，该任务将会被拒绝。理由是，由于资源有限，系统希望接纳具有更大效用和更低资源消耗的任务，以最大化问题(14)。收益为正表明任务效用足够高以证明资源消耗是合理的，并且系统以最大化其收益的方式来调度任务。简单来说，就是在资源有限的情况下，系统希望调度具有更高效益的任务。
 

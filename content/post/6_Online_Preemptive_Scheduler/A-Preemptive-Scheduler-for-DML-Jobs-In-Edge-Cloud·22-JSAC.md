@@ -32,12 +32,12 @@ math: true
 
 这篇论文考虑的是在云边协同场景中对分布式机器学习训练任务进行调度，以实现任务的平均完成时间最小化。主要关注的是如何利用抢占的方式，如何抢先地给一些任务分配worker和ps资源。我们首先需要看一下对于这个问题的一个数学表达，也就是模型(2)。
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/1.png)
+![](./1.png)
 <center>图1：最小化DML任务的JCT问题</center>
 
 为了理解模型中每一个变量及符号代表的物理意义，下面是其解释：
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/2.png)
+![](./2.png)
 <center>图2：符号及其描述</center>
 
 然后我们来逐条解读约束条件：
@@ -53,14 +53,14 @@ math: true
 约束(2b)：表示需要给任务j分配足够数量的worker，$n_j$表示的是任务j的处理能力，即一个可以被指派给任务j的worker在一个时隙(one time slot)内可以训练的mini-batch数量。对于$n_j$的具体解释，可以直接看原文，很清晰。但$n_j$中包含一些隐藏信息，这与后面模型的演变是息息相关的。如果任务j分配的worker和ps之间需要进行跨服务器通信，则具有通信时间，而当worker/ps如果是以docker的形式实现的时候，$b_j$表示的其实就是docker内的预留带宽，这个是非常容易理解的，也可以直接查证[[OASIS '18-Infocom]](https://ieeexplore.ieee.org/abstract/document/8486422)。所以$b_j$实际上就是$b_w$，而w虽然是一个实例化的worker，但可以代指同一个类的所有worker。这与python中类和实例化对象的理解是一样的。毕竟，一旦任务到达，就要为任务j指定worker的类型。其实笔者认为此处的处理不如[[DPS '22-TMC]](https://ieeexplore.ieee.org/abstract/document/9847354)中需要求解任务的类型更好，但如果加上任务的类型选择，确实会给这个问题再增加一层难度。
 不等式右边是任务j需要训练的总mini-batch数量。所以这条约束就是在确保任务分配的资源及其处理的量是比需要训练的量大的。
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/3.png)<center>图3：任务j的处理能力建模</center>
+![](./3.png)<center>图3：任务j的处理能力建模</center>
 
     epoch：训练完一个数据块中的全部mini-batch一次/轮
     iteration：迭代次数，一个epoch中训练mini-batch的次数，即训练完一个mini-batch一次就是一次迭代，也就等于mini-batch的数量
 
 在读者看来，约束2b存在一个问题，使用$v_{jsw}$和$y_{jsw}(t)$变量已经为模型设置了抢占思想，举一个很简单的例子，如图4所示。约束条件只能满足总的需要的训练轮次，而不能保障每个数据块都能训练$E_j$个epoch。
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/4.png)<center>图4：约束2b问题举例</center>
+![](./4.png)<center>图4：约束2b问题举例</center>
 
 约束(2c)：限制分配的worker的数量最多为$D_j$个，以确保一个数据块最多由一个worker训练。
 
@@ -83,7 +83,7 @@ math: true
 
 根据对模型的分析可知，模型(2)是一个MINLP问题，也就是混合整数非线性规划问题。所以即使是在离线情况下，该问题也是NP-Hard的。并且，这些决策变量之间存在耦合关系，其中，$y_{jsw}(t)$和$z_{jsp}(t)$变量确定使用哪个worker和ps，这会对$n_j$产生影响，而$n_j$表示的是一个时隙内能处理任务j的mini-batch的数量，所以对JCT也有影响。同时，非常重要的一个点，这个论文的思想是抢占！！！抢占！！！抢占！！！
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/5.png)<center>图5：在线算法的主要思想</center>
+![](./5.png)<center>图5：在线算法的主要思想</center>
 
 所以为了求解MINLP问题，作者进行了问题重构，变成了ILP问题(4)。这里使用了一个转化思想。也就是对于所有的任务集合来说，直接计算每个任务j的jct =（完成时间-到达时间），是可以等价于一个更加细粒度的计算方法的。由前面的约束条件(2c)可知，每个数据块只分配给一个worker进行处理，同时每个任务具有$D_j$个大小相同的数据块$d_j$，只要找出完成时间最晚的数据块，那么这个时间就是任务j的完成时间。
 
@@ -111,7 +111,7 @@ math: true
 
 其次，对于平均分数流时间，可以直接解读模型(3)的定义：
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/7.png)<center>图6：数据块d的平均分数流时间模型</center>
+![](./7.png)<center>图6：数据块d的平均分数流时间模型</center>
 
 模型可以解读为$1 / D_j * XXX$，这个XXX就是任务的总分数流时间，使用$1 / D_j$是为了表示平均到每个数据块上。
 
@@ -141,7 +141,7 @@ ILP模型(4)对worker和ps的分配与调度问题进行了解耦，从一个问
 
 在总算法框架$A_{online}$中
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/6.png)<center>图7：在线抢占调度算法框架</center>
+![](./6.png)<center>图7：在线抢占调度算法框架</center>
 
 在每个时隙：
 
@@ -165,13 +165,13 @@ ILP模型(4)对worker和ps的分配与调度问题进行了解耦，从一个问
 
 论文为每个worker的调度引入了一个数据块处理规则，叫最高平均处理速率优先规则来处理worker上的挂起数据块队列。其中，任务j的每个数据块d的平均处理速率定义为:
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/12.png)<center>图8：任务j的每个数据块d的平均处理速率</center>
+![](./12.png)<center>图8：任务j的每个数据块d的平均处理速率</center>
 
 很容易理解，因为分母是任务j要训练的mini-batch总量，分子是一个时隙能处理的任务j的mini-batch量。
 
 引入这个变量的是为了通过对比每一个要分配到worker w上的数据块d的处理速率与worker w上挂起数据块中数据块d'的处理速率，来确定数据块d的一个平均训练时间增量值，也就是$Q_{jdsw}$，其计算方式如下所示：
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/9.png)<center>图9：时间增量Q值的计算公式</center>
+![](./9.png)<center>图9：时间增量Q值的计算公式</center>
 
 牢记一个事情哈，那就是$1 / D_j$的目的是平均到每一个数据块上，这个的前提也是任务j的每个数据块大小都是相同的。
 
@@ -187,7 +187,7 @@ ILP模型(4)对worker和ps的分配与调度问题进行了解耦，从一个问
 
 设计这个算法的目的是为了确定每个任务如何分配它的每个数据块并决定数据块的调度窗口，以实现JCT最小化
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/8.png)<center>图10：在线worker的分配与调度</center>
+![](./8.png)<center>图10：在线worker的分配与调度</center>
 
 对于当前时隙收集到的每个任务j：
 
@@ -220,7 +220,7 @@ ILP模型(4)对worker和ps的分配与调度问题进行了解耦，从一个问
 
 ### Alg.3：计算时间增量Q
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/10.png)<center>图11：Q的计算函数方法</center>
+![](./10.png)<center>图11：Q的计算函数方法</center>
 
 如果任务j的第一个数据块分配到cloud上了就把剩余的数据块全都放在cloud上($]\zeta_j=1$)，Q只需要计算第一项和第三项，说明云上没有挂起的数据块，且云上不允许抢占，自然没有A2
 
@@ -234,7 +234,7 @@ ILP模型(4)对worker和ps的分配与调度问题进行了解耦，从一个问
 
 ### Alg.4：更新变量y和β
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/11.png)<center>图12：变量更新函数</center>
+![](./11.png)<center>图12：变量更新函数</center>
 
 $\beta_{sw}(t)$表示的是在时隙r时服务器s上worker w上所有未完成数据块的总平均权重，也就是挂起队列A中的全部数据块
 
@@ -253,7 +253,7 @@ $\beta_{sw}(t)$表示的是在时隙r时服务器s上worker w上所有未完成�
 
 ILP模型(4)和约束条件(4c-4d)即构成PS分配问题的模型，与worker的分配模型是相互独立的。
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/13.png)
+![](./13.png)
 
 <center>图13：A_ps算法</center>
 
@@ -329,7 +329,7 @@ $\zeta_j = 1$时，[209.438, 11107]s。换算成分钟为单位：[3.49, 185]min
 
 但是在一个worker上处理一个数据块的时间计算是：一个数据块需要训练的mini-batch量 / 一个时隙能训练的mini-batch量。返回Q4，笔者在Q4部分进行了计算，得到的结果是[1.16, 174]。很明显，1.16个time slot并不能占满两个完整的时隙段，但是又需要向上取整来确保能够训练完这个数据块。所以即使第二个时隙无法完全用完，也不会分配给其他的数据块d。笔者的这个结论也可以由模型(4)的约束(4b)得到验证。这条约束的意思就是对于任意一个任务j到达后的时隙t来说，服务器s上的worker w在每个时隙只能服务于任务j的数据块d。这一点也可以在Alg.4的第二行得到验证。
 
-![](./A-Preemptive-Scheduler-for-DML-Jobs-In-Edge-Cloud·22-JSAC/14.png)
+![](./14.png)
 
 总的来说，就是worker存在在一个时隙内空闲的情况，也就是当前运行的数据块已经完全训练完了，但是又没法让这个worker继续按照安排给它的执行内容继续顺序执行。
 
