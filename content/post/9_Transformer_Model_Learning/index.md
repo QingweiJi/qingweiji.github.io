@@ -139,3 +139,5 @@ BGM：
 [8] [How to Estimate the Number of Parameters in Transformer models](https://towardsdatascience.com/how-to-estimate-the-number-of-parameters-in-transformer-models-ca0f57d8dff0)
 
 [9] [手写 Self-Attention 的四重境界，从 self-attention 到 multi-head self-attention](https://bruceyuan.com/hands-on-code/from-self-attention-to-multi-head-self-attention.html)
+
+[10] [Transformer推理结构简析（Decoder + MHA）](https://mp.weixin.qq.com/s/UN6sXJlKgZIFR0VigRhWQQ)

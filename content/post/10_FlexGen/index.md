@@ -7,17 +7,13 @@ author:
   - Qingwei Ji
 tags:
   - LLM Inference 
-  - CPU-GPU offloading
+  - Offloading
   - resource-constrained device
 ---
 
 *[FlexGen: High-Throughput Generative Inference of Large Language Models with a Single GPU](https://dl.acm.org/doi/10.5555/3618408.3619696)[ICML’23]* 
 
-以FlexGen作为LLM推理入门论文来说，是有些晦涩难懂的，所以论文解析中穿插着transformer的一些背景知识，还有与计算机体系结构方面的学习与思考。文章较长，但笔者写完茅塞顿开。
-
-
-<!--more-->
-
+以FlexGen作为LLM推理入门论文来说，是有些晦涩难懂的，所以在阅读本论文前请务必对Transformer模型有一些入门级别的学习。文章较长，但笔者写完茅塞顿开。
 
 针对LLM推理，减小计算和存储资源的三个方向：
 
@@ -28,14 +24,13 @@ tags:
 （3）Offloading，即把权重等参数从GPU内存卸载到CPU内存甚至硬盘中，还会用到模型量化技术。
 
 由于FlexGen在arXiv上挂出来的时间比较长，算是LLM推理加速领域非常早的研究在内存受限的单个GPU环境中的高性能解决方案，并且FlexGen关注的是批量处理的对延迟不敏感的离线任务。这一问题背景也是FlexGen的作者敢大胆地将其设计成一个极度重视吞吐throughout的推理系统，导致延迟latency几乎完全被牺牲。这在论文强调的实验结果中可以看出，延迟已经被放大至3.3小时，这对于实时在线推理肯定是不适用的。
-![](./4.png)
-
+![](./1.png)
 
 从一个初入门LLM推理加速方向的读者角度来看，FlexGen有两个非常亮眼的contribution。
 
 第一个就是对LLM推理计算的量化分析（原文3 Background: LLM Inference）。FlexGen中在该章节中对**LLM推理两个阶段的计算量进行量化分析**，掌握这部分之后，才能继续阅读后续的Cost Model部分。具体包括LLM推理参数量、计算量、中间激活值、KV cache存储量和更新行为，还有generative token时序依赖等基本计算行为做了量化分析，同时也对LLM推理计算的**KV cache原理做了形式化描述**。
 
-第二个contribution就是Offloading Strategy，包括两个部分：构建Search Space后通过cost model找到最佳卸载策略。
+第二个contribution就是Offloading Strategy，包括两个部分：构建Search Space后通过cost model找到最佳卸载策略。准确来说，这部分激发了笔者在计算系统设计/优化方面的学习与思考。
 
 笔者将对上述两个contribution进行详细解读。
 
@@ -207,7 +202,7 @@ Effective batch size 也叫 Block size($bls$) = GPU batch size * GPU batches in 
 ### LLM推理计算图
 
 FlexGen构建了一个推理计算图，如下所示。其中模型有4层，每个prompt生成3个token。该图中一个正方形就表示一层的GPU批次的计算，相同颜色的正方形共享相同的权重。
-![](./3-Computational%20graph.png)
+![](./2.png)
 根据上面抽象出来的推理计算图，要设法在图中找出一条能够最小化执行时间的路径，其中包括在设备之间移动张量时的计算成本和 I/O 成本。
 
 
@@ -246,7 +241,7 @@ $$T_{pre}=\max(ctog^g,gtoc^g,dtoc^g,ctod^g,comp^g)$$
 其中各参数分别表示一层解码过程中，CPU读到GPU、GPU写到CPU、磁盘读到CPU、CPU写到磁盘、计算的时延。
 
 以下是FlexGen中计算磁盘到CPU拖取数据的耗时的量化结论。
-![](./2-cost.png)
+![](./5.png)
 
 对于像这样的I/O术语，可以通过将包含权重、激活和缓存读取的I/O事件相加来估计。
 
@@ -302,6 +297,8 @@ BGM：
 [4] [模型参数量及显存分析](https://clvsit.github.io/%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0%E9%87%8F%E5%8F%8A%E6%98%BE%E5%AD%98%E5%88%86%E6%9E%90/)
 
 [5] [How to Estimate the Number of Parameters in Transformer models](https://towardsdatascience.com/how-to-estimate-the-number-of-parameters-in-transformer-models-ca0f57d8dff0)
+
+[6] [如何估算LLM推理和训练所需的GPU内存？](https://mp.weixin.qq.com/s/zCaIEFXIMjW0JwhLSX8skg)
 
 [4] [Flexgen LLM推理计算环节的量化分析](https://zhuanlan.zhihu.com/p/615327112)
 
